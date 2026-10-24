@@ -1,0 +1,465 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Saim Afzaal</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<style>
+/* Layout concept: one dark glass world. A floating dock sits over a single scrolling column of frosted widgets,
+   all lit by drifting colour orbs and a cursor-following specular light.
+   The look is dark by choice, so it commits to a single theme and sets every colour explicitly. */
+:root {
+  --bg: #05060f;
+  --fg: #f5f7ff;
+  --fg-dim: rgba(235, 240, 255, 0.68);
+  --fg-faint: rgba(235, 240, 255, 0.45);
+  --cyan: #38e1ff;
+  --violet: #9b6bff;
+  --blue: #2a4cff;
+  --magenta: #ff4fd8;
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-top: rgba(255, 255, 255, 0.38);
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+  color-scheme: dark;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: rgba(155, 107, 255, 0.5); color: #fff; }
+
+/* ---------- Ambient background ---------- */
+.bg-mesh { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
+  background:
+    radial-gradient(60% 50% at 15% 10%, rgba(42, 76, 255, 0.35), transparent 70%),
+    radial-gradient(50% 45% at 90% 20%, rgba(155, 107, 255, 0.30), transparent 70%),
+    radial-gradient(55% 50% at 70% 95%, rgba(255, 79, 216, 0.20), transparent 70%),
+    radial-gradient(50% 45% at 5% 85%, rgba(56, 225, 255, 0.18), transparent 70%),
+    var(--bg);
+}
+.orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.55; will-change: transform; }
+.orb.o1 { width: 42vmax; height: 42vmax; background: radial-gradient(circle, var(--cyan), transparent 65%); left: -10vmax; top: 5vh; animation: drift1 26s ease-in-out infinite alternate; }
+.orb.o2 { width: 38vmax; height: 38vmax; background: radial-gradient(circle, var(--violet), transparent 65%); right: -8vmax; top: -6vmax; animation: drift2 32s ease-in-out infinite alternate; }
+.orb.o3 { width: 34vmax; height: 34vmax; background: radial-gradient(circle, var(--blue), transparent 65%); left: 30vw; bottom: -12vmax; animation: drift3 29s ease-in-out infinite alternate; }
+.orb.o4 { width: 28vmax; height: 28vmax; background: radial-gradient(circle, var(--magenta), transparent 65%); right: 8vw; bottom: 10vh; opacity: 0.4; animation: drift4 36s ease-in-out infinite alternate; }
+@keyframes drift1 { to { transform: translate(28vw, 22vh) scale(1.2); } }
+@keyframes drift2 { to { transform: translate(-30vw, 30vh) scale(0.9); } }
+@keyframes drift3 { to { transform: translate(-26vw, -28vh) scale(1.15); } }
+@keyframes drift4 { to { transform: translate(-22vw, -34vh) scale(1.3); } }
+
+.cursor-glow { position: fixed; z-index: 1; left: 0; top: 0; width: 520px; height: 520px; margin: -260px 0 0 -260px;
+  border-radius: 50%; pointer-events: none; opacity: 0; transition: opacity .4s;
+  background: radial-gradient(circle, rgba(140, 190, 255, 0.22), rgba(155, 107, 255, 0.10) 40%, transparent 70%);
+  mix-blend-mode: screen; will-change: transform; }
+.cursor-glow.on { opacity: 1; }
+
+/* ---------- Glass ---------- */
+.glass {
+  position: relative;
+  background: linear-gradient(160deg, rgba(255,255,255,0.09), rgba(255,255,255,0.04) 45%, rgba(255,255,255,0.06));
+  background-color: var(--glass-bg);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid var(--glass-border);
+  border-radius: 28px;
+  box-shadow:
+    inset 0 1px 0 var(--glass-top),
+    inset 0 -1px 0 rgba(255,255,255,0.05),
+    inset 0 0 24px rgba(255,255,255,0.03),
+    0 20px 50px -18px rgba(0,0,0,0.6),
+    0 2px 8px rgba(0,0,0,0.25);
+}
+.glass::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .35s;
+  background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 0%), rgba(255,255,255,0.13), transparent 45%); }
+.glass::after { content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1px; pointer-events: none; opacity: 0; transition: opacity .35s;
+  background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 0%), rgba(255,255,255,0.8), transparent 60%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); mask-composite: exclude; }
+.glass:hover::before, .glass:hover::after { opacity: 1; }
+.glass-sm { border-radius: 18px; }
+
+/* ---------- Entrance ---------- */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(26px); } }
+.fx { animation: fadeUp .9s var(--d, 0s) cubic-bezier(.2,.7,.2,1) backwards; }
+
+/* ---------- Dock ---------- */
+.dock-wrap { position: fixed; z-index: 50; left: 0; right: 0; top: calc(14px + env(safe-area-inset-top, 0px)); display: flex; justify-content: center; pointer-events: none;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.dock { pointer-events: auto; display: flex; align-items: center; gap: 4px; padding: 8px; border-radius: 999px; max-width: 100%; }
+.dock a { position: relative; display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px; color: var(--fg-dim); font-size: 14px; font-weight: 500; text-decoration: none;
+  transition: transform .25s cubic-bezier(.3,1.6,.5,1), color .2s, background .2s, box-shadow .3s; transform-origin: center bottom; }
+.dock a:hover { transform: scale(1.18) translateY(-2px); color: #fff; background: rgba(255,255,255,0.1); }
+.dock a:has(+ a:hover), .dock a:hover + a { transform: scale(1.07); }
+.dock a.active { color: #fff; background: rgba(255,255,255,0.14); box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 0 22px rgba(56,225,255,0.45), 0 0 44px rgba(155,107,255,0.3); }
+.dock a svg { width: 18px; height: 18px; flex: none; }
+@media (max-width: 560px) { .dock a { padding: 11px 13px; } .dock a span { display: none; } }
+
+/* ---------- Type & atoms ---------- */
+.grad-text { background: linear-gradient(100deg, #fff 0%, var(--cyan) 25%, var(--violet) 55%, var(--magenta) 80%, #fff 100%); background-size: 300% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; animation: shine 7s linear infinite;
+  filter: drop-shadow(0 0 28px rgba(155,107,255,0.35)); }
+@keyframes shine { to { background-position: -300% 0; } }
+.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--cyan); }
+.h2 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.08; text-wrap: balance; }
+.lead { color: var(--fg-dim); max-width: 62ch; }
+
+.badge { display: inline-flex; align-items: center; gap: 10px; padding: 8px 16px 8px 12px; border-radius: 999px; font-size: 13px; font-weight: 500; color: #eafff4; }
+.pulse-dot { position: relative; width: 9px; height: 9px; border-radius: 50%; background: #3dffa0; box-shadow: 0 0 12px #3dffa0; }
+.pulse-dot::after { content: ""; position: absolute; inset: -5px; border-radius: 50%; border: 1px solid #3dffa0; animation: ping 2s ease-out infinite; }
+@keyframes ping { from { transform: scale(.6); opacity: .9; } to { transform: scale(1.7); opacity: 0; } }
+
+.btn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 28px; border-radius: 999px; font-weight: 600; font-size: 15px; color: #fff; text-decoration: none; cursor: pointer; border: 1px solid rgba(255,255,255,0.2);
+  -webkit-backdrop-filter: blur(20px) saturate(180%); backdrop-filter: blur(20px) saturate(180%); transition: transform .25s cubic-bezier(.3,1.5,.5,1), box-shadow .3s, background .3s; font-family: inherit; }
+.btn svg { width: 18px; height: 18px; }
+.btn:hover { transform: translateY(-3px) scale(1.03); }
+.btn:active { transform: scale(.97); }
+.btn-primary { background: linear-gradient(135deg, rgba(56,225,255,0.42), rgba(155,107,255,0.5)); box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 0 28px rgba(56,225,255,0.4), 0 10px 30px -8px rgba(155,107,255,0.6); }
+.btn-primary:hover { box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 0 44px rgba(56,225,255,0.65), 0 14px 40px -8px rgba(155,107,255,0.8); }
+.btn-secondary { background: rgba(255,255,255,0.07); box-shadow: inset 0 1px 0 rgba(255,255,255,0.3); }
+.btn-secondary:hover { background: rgba(255,255,255,0.13); }
+:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+
+.skill { display: inline-flex; align-items: center; gap: 10px; padding: 11px 18px; border-radius: 999px; font-size: 14px; font-weight: 500; color: var(--fg-dim);
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); box-shadow: inset 0 1px 0 rgba(255,255,255,0.2); transition: all .3s; cursor: default; }
+.skill svg { width: 17px; height: 17px; transition: color .3s, filter .3s; }
+.skill:hover { color: #fff; transform: translateY(-3px); background: color-mix(in srgb, var(--c) 22%, transparent); border-color: color-mix(in srgb, var(--c) 70%, white 10%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.4), 0 0 26px color-mix(in srgb, var(--c) 60%, transparent); }
+.skill:hover svg { color: var(--c); filter: drop-shadow(0 0 6px var(--c)); }
+
+.icon-chip { width: 46px; height: 46px; border-radius: 15px; display: grid; place-items: center; flex: none; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16); box-shadow: inset 0 1px 0 rgba(255,255,255,0.3); }
+.icon-chip svg { width: 22px; height: 22px; }
+
+/* ---------- Tilt ---------- */
+.tilt { transform-style: preserve-3d; transition: transform .18s ease-out; will-change: transform; }
+.tilt.leaving { transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+
+/* ---------- Project cards ---------- */
+.win-bar { display: flex; align-items: center; gap: 8px; padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.win-dot { width: 11px; height: 11px; border-radius: 50%; }
+.win-title { margin-left: 8px; font-size: 12px; color: var(--fg-faint); letter-spacing: .02em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.shot { aspect-ratio: 16 / 9; max-width: 100%; border-radius: 16px; overflow: hidden; position: relative; display: grid; place-items: center; border: 1px solid rgba(255,255,255,0.12); }
+.shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tag { display: inline-block; padding: 5px 12px; border-radius: 999px; font-size: 12px; font-weight: 500; color: #dff6ff; background: rgba(56,225,255,0.12); border: 1px solid rgba(56,225,255,0.35); box-shadow: inset 0 1px 0 rgba(255,255,255,0.2); }
+
+/* ---------- Form ---------- */
+.field { width: 100%; box-sizing: border-box; padding: 16px 18px; border-radius: 16px; color: var(--fg); font: inherit; font-size: 15px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.16); box-shadow: inset 0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.08);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); transition: border-color .25s, box-shadow .25s, background .25s; }
+.field::placeholder { color: var(--fg-faint); }
+.field:focus { outline: none; background: rgba(255,255,255,0.09); border-color: rgba(56,225,255,0.85);
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.15), 0 0 0 4px rgba(56,225,255,0.14), 0 0 30px rgba(56,225,255,0.35); }
+.label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 500; color: var(--fg-dim); }
+.social { width: 54px; height: 54px; border-radius: 18px; display: grid; place-items: center; color: var(--fg-dim); text-decoration: none;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.16); box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
+  -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); transition: all .3s cubic-bezier(.3,1.5,.5,1); }
+.social svg { width: 22px; height: 22px; }
+.social:hover { color: #fff; transform: translateY(-5px) scale(1.08); background: rgba(155,107,255,0.28); border-color: rgba(190,160,255,0.8); box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 0 28px rgba(155,107,255,0.65); }
+
+section { scroll-margin-top: 110px; }
+.wrap { max-width: 1120px; margin: 0 auto; position: relative; z-index: 2; }
+
+@media (hover: none), (pointer: coarse) { .cursor-glow { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .orb, .grad-text, .pulse-dot::after, .fx { animation: none !important; }
+  .tilt { transition: none; }
+}
+</style>
+
+<div class="bg-mesh" aria-hidden="true">
+  <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div><div class="orb o4"></div>
+</div>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+<!-- Floating dock -->
+<div class="dock-wrap">
+  <nav class="dock glass" style="border-radius:999px" aria-label="Main">
+    <a href="#home" data-link="home" class="active"><i data-lucide="house"></i><span>Home</span></a>
+    <a href="#about" data-link="about"><i data-lucide="user"></i><span>About</span></a>
+    <a href="#skills" data-link="skills"><i data-lucide="layers"></i><span>Skills</span></a>
+    <a href="#projects" data-link="projects"><i data-lucide="folder-kanban"></i><span>Projects</span></a>
+    <a href="#contact" data-link="contact"><i data-lucide="send"></i><span>Contact</span></a>
+  </nav>
+</div>
+
+<main class="wrap" style="padding-block: 0 48px">
+
+  <!-- HERO -->
+  <section id="home" style="padding-top: calc(110px + env(safe-area-inset-top, 0px)); padding-bottom: 72px">
+    <div class="glass fx tilt text-center mx-auto" data-tilt="4" style="max-width: 880px; padding: clamp(32px, 6vw, 72px) clamp(20px, 5vw, 64px); border-radius: 40px">
+      <div class="badge glass fx" style="--d:.15s; border-radius:999px; border-color: rgba(61,255,160,0.35)">
+        <span class="pulse-dot"></span> Available for Projects
+      </div>
+      <h1 class="fx" style="--d:.25s; margin: 28px 0 0; font-weight: 800; letter-spacing: -0.045em; line-height: .95; font-size: clamp(3.2rem, 14vw, 8rem)">
+        <span class="grad-text" style="display:block">SAIM</span>
+        <span class="grad-text" style="display:block; animation-delay:-1.5s">AFZAAL</span>
+      </h1>
+      <p class="fx" style="--d:.4s; margin: 26px auto 0; max-width: 34ch; font-size: clamp(1.05rem, 2.4vw, 1.35rem); color: var(--fg-dim); font-weight: 400">
+        Web Developer, Creator &amp; Tech Enthusiast building fast, polished experiences for the modern web.
+      </p>
+      <div class="fx flex flex-wrap items-center justify-center gap-3" style="--d:.55s; margin-top: 38px">
+        <a href="#projects" class="btn btn-primary"><i data-lucide="sparkles"></i> Explore Projects</a>
+        <a href="#contact" class="btn btn-secondary"><i data-lucide="mail"></i> Contact Me</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT + SKILLS (Bento) -->
+  <section id="about" style="padding-bottom: 24px">
+    <div class="fx" style="margin-bottom: 28px; --d:.1s">
+      <div class="eyebrow">About</div>
+      <h2 class="h2" style="margin-top: 10px">A developer who cares how it feels.</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
+      <article class="glass tilt md:col-span-4" data-tilt="3" style="padding: 32px">
+        <div class="flex items-center gap-3" style="margin-bottom: 18px">
+          <div class="icon-chip"><i data-lucide="code-xml" style="color: var(--cyan)"></i></div>
+          <h3 style="margin:0; font-size: 20px; font-weight: 600">Hi, I'm Saim.</h3>
+        </div>
+        <!-- EDIT: replace this paragraph with your own story -->
+        <p class="lead" style="margin: 0 0 14px">I design and build websites that are quick to load, easy to use and pleasant to look at. I like turning rough ideas into finished products, from the first sketch to the deployed link.</p>
+        <p class="lead" style="margin: 0">When I'm not coding, I'm exploring new AI tools, studying interface design and finding better ways to ship.</p>
+      </article>
+
+      <article class="glass tilt md:col-span-2" data-tilt="6" style="padding: 28px; display:flex; flex-direction:column; justify-content:space-between; gap: 22px">
+        <div class="icon-chip"><i data-lucide="zap" style="color: var(--magenta)"></i></div>
+        <div>
+          <div class="eyebrow" style="color: var(--magenta)">Focus</div>
+          <p style="margin: 8px 0 0; font-size: 20px; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em">Clean code, sharp design, real results.</p>
+        </div>
+      </article>
+
+      <article id="skills" class="glass tilt md:col-span-4" data-tilt="3" style="padding: 32px">
+        <div class="flex items-center gap-3" style="margin-bottom: 20px">
+          <div class="icon-chip"><i data-lucide="layers" style="color: var(--violet)"></i></div>
+          <h3 style="margin:0; font-size: 20px; font-weight: 600">Skills &amp; Tools</h3>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <span class="skill" style="--c:#ff7a45"><i data-lucide="file-code-2"></i>HTML5</span>
+          <span class="skill" style="--c:#38a8ff"><i data-lucide="paintbrush"></i>CSS3</span>
+          <span class="skill" style="--c:#ffd84a"><i data-lucide="braces"></i>JavaScript</span>
+          <span class="skill" style="--c:#c58bff"><i data-lucide="sparkles"></i>AI Tools</span>
+          <span class="skill" style="--c:#ff4fd8"><i data-lucide="pen-tool"></i>UI/UX</span>
+          <span class="skill" style="--c:#38e1ff"><i data-lucide="rocket"></i>Web Deployment</span>
+        </div>
+      </article>
+
+      <article class="glass tilt md:col-span-2" data-tilt="6" style="padding: 28px; display:flex; flex-direction:column; justify-content:space-between; gap: 22px">
+        <div class="icon-chip"><i data-lucide="globe" style="color: var(--cyan)"></i></div>
+        <div>
+          <div class="eyebrow">Currently</div>
+          <p style="margin: 8px 0 0; font-size: 18px; font-weight: 600; line-height: 1.35">Open to freelance and collaboration.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" style="padding: 72px 0 24px">
+    <div class="fx" style="margin-bottom: 28px; --d:.1s">
+      <div class="eyebrow">Projects</div>
+      <h2 class="h2" style="margin-top: 10px">Selected work.</h2>
+    </div>
+    <div id="projectGrid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" style="padding: 72px 0 24px">
+    <div class="glass tilt" data-tilt="2" style="padding: clamp(24px, 5vw, 56px); border-radius: 36px">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-10">
+        <div class="lg:col-span-2" style="min-width:0">
+          <div class="eyebrow">Contact</div>
+          <h2 class="h2" style="margin: 10px 0 14px">Let's build something.</h2>
+          <p class="lead" style="margin: 0 0 28px">Have a project, an idea or just want to say hello? Send a message and I'll get back to you.</p>
+          <div id="socials" class="flex flex-wrap gap-3"></div>
+        </div>
+        <form id="contactForm" class="lg:col-span-3 flex flex-col gap-5" style="min-width:0" novalidate>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div><label class="label" for="name">Name</label><input class="field" id="name" name="name" type="text" placeholder="Your name" autocomplete="name" required></div>
+            <div><label class="label" for="email">Email</label><input class="field" id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required></div>
+          </div>
+          <div><label class="label" for="message">Message</label><textarea class="field" id="message" name="message" rows="5" placeholder="Tell me about your project..." style="resize: vertical" required></textarea></div>
+          <div class="flex flex-wrap items-center gap-4">
+            <button type="submit" class="btn btn-primary"><i data-lucide="send"></i> Send Message</button>
+            <p id="formStatus" role="status" style="margin:0; font-size: 14px; color: var(--fg-dim)"></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer style="padding: 40px 0 8px; text-align: center; font-size: 13px; color: var(--fg-faint)">
+    &copy; <span id="year"></span> Saim Afzaal. Designed &amp; built with care.
+  </footer>
+</main>
+
+<script>
+/* =====================================================================
+   PROJECTS ARRAY  ←  EDIT YOUR REAL PROJECTS HERE
+   ---------------------------------------------------------------------
+   Each project supports:
+     title       – project name
+     description – one or two sentences
+     tags        – technologies used (shown as glass pills)
+     link        – live demo URL (the whole card and its "View Project" button open it)
+     icon        – Lucide icon name for the banner when there is no image
+     image       – screenshot. Use a data: URI (base64) or a file published
+                   with this page. Leave '' to show a glowing placeholder.
+   Add, remove or reorder objects freely. The grid updates automatically.
+   ===================================================================== */
+const PROJECTS = [
+  {
+    title: 'My Game',
+    description: 'An interactive, action-packed web gaming experience built with modern web technologies and smooth UI controls.',
+    tags: ['Web Game', 'Interactive UI', 'Frontend'],
+    link: 'https://saimbattle1.lovable.app',
+    icon: 'gamepad-2',
+    image: ''
+  },
+  {
+    title: 'Clipforge',
+    description: 'A modern content creation and video clipping web platform designed for fast, seamless media workflows.',
+    tags: ['Media Tool', 'Web App', 'Modern UI'],
+    link: 'https://clipforgeco.lovable.app',
+    icon: 'clapperboard',
+    image: ''
+  }
+];
+
+/* SOCIAL LINKS ← replace each url with your real profile */
+const SOCIALS = [
+  { label: 'GitHub',    icon: 'github',    url: 'https://github.com/' },
+  { label: 'LinkedIn',  icon: 'linkedin',  url: 'https://www.linkedin.com/' },
+  { label: 'Instagram', icon: 'instagram', url: 'https://www.instagram.com/' }
+];
+/* ===================== END OF EDITABLE CONTENT ===================== */
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const slug = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const PLACEHOLDER_HUES = [['#38e1ff','#2a4cff'], ['#9b6bff','#ff4fd8'], ['#2a4cff','#9b6bff'], ['#ff4fd8','#38e1ff']];
+
+function renderProjects() {
+  const grid = document.getElementById('projectGrid');
+  grid.innerHTML = PROJECTS.map((p, i) => {
+    const [c1, c2] = PLACEHOLDER_HUES[i % PLACEHOLDER_HUES.length];
+    const shot = p.image
+      ? `<img src="${esc(p.image)}" alt="${esc(p.title)} screenshot" loading="lazy">`
+      : `<div style="position:absolute;inset:0;background:radial-gradient(70% 90% at 20% 20%, ${c1}aa, transparent 70%), radial-gradient(70% 90% at 85% 85%, ${c2}aa, transparent 70%), rgba(255,255,255,0.04)"></div>
+         <i data-lucide="${esc(p.icon || 'app-window')}" style="position:relative;width:68px;height:68px;color:rgba(255,255,255,0.85);filter:drop-shadow(0 0 14px rgba(255,255,255,0.5))"></i>`;
+    const tags = (p.tags || []).map(t => `<span class="tag">${esc(t)}</span>`).join('');
+    return `
+      <a class="glass tilt fx project-card" href="${esc(p.link)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(p.title)} in a new tab" data-tilt="7" style="--d:${0.08 * i}s; overflow:hidden; min-width:0; display:block; color:inherit; text-decoration:none; cursor:pointer">
+        <div class="win-bar">
+          <span class="win-dot" style="background:#ff5f57"></span><span class="win-dot" style="background:#febc2e"></span><span class="win-dot" style="background:#28c840"></span>
+          <span class="win-title">${esc(slug(p.title))}.app</span>
+        </div>
+        <div style="padding: 18px 18px 24px; display:flex; flex-direction:column; gap:16px">
+          <div class="shot">${shot}</div>
+          <div>
+            <h3 style="margin:0 0 6px; font-size:20px; font-weight:600; letter-spacing:-0.01em">${esc(p.title)}</h3>
+            <p style="margin:0; font-size:15px; color:var(--fg-dim)">${esc(p.description)}</p>
+          </div>
+          <div class="flex flex-wrap gap-2">${tags}</div>
+          <div><span class="btn btn-primary" style="padding:12px 22px; font-size:14px">View Project <i data-lucide="arrow-up-right"></i></span></div>
+        </div>
+      </a>`;
+  }).join('');
+}
+
+function renderSocials() {
+  document.getElementById('socials').innerHTML = SOCIALS.map(s =>
+    `<a class="social" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(s.label)}" title="${esc(s.label)}"><i data-lucide="${esc(s.icon)}"></i></a>`
+  ).join('');
+}
+
+renderProjects();
+renderSocials();
+document.getElementById('year').textContent = new Date().getFullYear();
+if (window.lucide) lucide.createIcons();
+
+/* ---------- Pointer-driven light + 3D tilt ---------- */
+const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const glow = document.getElementById('cursorGlow');
+let px = 0, py = 0, ticking = false;
+
+function paintLight() {
+  ticking = false;
+  glow.style.transform = `translate(${px}px, ${py}px)`;
+  document.querySelectorAll('.glass').forEach(el => {
+    const r = el.getBoundingClientRect();
+    if (r.bottom < -200 || r.top > innerHeight + 200) return;
+    el.style.setProperty('--mx', (px - r.left) + 'px');
+    el.style.setProperty('--my', (py - r.top) + 'px');
+  });
+}
+if (canHover) {
+  addEventListener('pointermove', e => {
+    px = e.clientX; py = e.clientY;
+    glow.classList.add('on');
+    if (!ticking) { ticking = true; requestAnimationFrame(paintLight); }
+  }, { passive: true });
+  document.addEventListener('pointerleave', () => glow.classList.remove('on'));
+}
+
+if (canHover && !reduceMotion) {
+  document.addEventListener('pointermove', e => {
+    const el = e.target.closest && e.target.closest('.tilt');
+    document.querySelectorAll('.tilt.active').forEach(t => { if (t !== el) resetTilt(t); });
+    if (!el) return;
+    const max = parseFloat(el.dataset.tilt || 6);
+    const r = el.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    el.classList.add('active');
+    el.classList.remove('leaving');
+    el.style.transform = `perspective(1000px) rotateX(${(-y * max).toFixed(2)}deg) rotateY(${(x * max).toFixed(2)}deg) translateZ(0)`;
+  }, { passive: true });
+  document.addEventListener('pointerleave', () => document.querySelectorAll('.tilt.active').forEach(resetTilt));
+}
+function resetTilt(el) {
+  el.classList.remove('active');
+  el.classList.add('leaving');
+  el.style.transform = '';
+}
+
+/* ---------- Active dock link on scroll ---------- */
+const links = [...document.querySelectorAll('[data-link]')];
+const sectionIds = ['home', 'about', 'projects', 'contact'];
+function setActive(id) { links.forEach(a => a.classList.toggle('active', a.dataset.link === id)); }
+const spy = new IntersectionObserver(entries => {
+  entries.forEach(en => { if (en.isIntersecting) setActive(en.target.id); });
+}, { rootMargin: '-35% 0px -55% 0px' });
+[...sectionIds, 'skills'].forEach(id => { const el = document.getElementById(id); if (el) spy.observe(el); });
+
+/* ---------- Contact form ---------- */
+/* This page has no backend, so the form is not wired to an inbox yet.
+   When you're ready, replace the body of the submit handler with a call to
+   your form service (Formspree, Web3Forms, your own API) and show its result. */
+const form = document.getElementById('contactForm');
+const statusEl = document.getElementById('formStatus');
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    statusEl.style.color = '#ffb3c1';
+    statusEl.textContent = 'Please fill in your name, a valid email and a message.';
+    return;
+  }
+  statusEl.style.color = 'var(--fg-dim)';
+  statusEl.textContent = 'Message captured on this page. Connect a form service to deliver it.';
+});
+</script>
+
+</body></html>
